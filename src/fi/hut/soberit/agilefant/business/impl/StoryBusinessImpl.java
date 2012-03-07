@@ -264,7 +264,6 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                 } else {
                     this.storyRankBusiness.rankToBottom(story, backlog.getParent());
                 }
-                
             }
         }
     }
@@ -596,7 +595,6 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     private void rankToIterationBottom(Story story, Backlog backlog,
             Backlog oldBacklog, Backlog oldIteration) {
         final Backlog backlogsParent = backlog.getParent();
-
         if (oldBacklog instanceof Product) {
             storyRankBusiness.rankToBottom(story, backlog);
             /* We are moving from a Product to an iteration so
@@ -607,7 +605,6 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                 storyRankBusiness.rankToBottom(story, backlogsParent);
             }
         } else if (oldBacklog instanceof Iteration) { // from iteration to an other
-            
             // iterations are under the same project
             if (backlogsParent == oldBacklog.getParent()) {
                 storyRankBusiness.removeRank(story, oldBacklog);
@@ -953,5 +950,5 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
     public void setStoryHierarchyBusiness(StoryHierarchyBusiness storyHierarchyBusiness) {
         this.storyHierarchyBusiness = storyHierarchyBusiness;
     }
-
+    
 }
