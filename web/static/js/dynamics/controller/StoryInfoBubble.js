@@ -283,6 +283,19 @@ StoryInfoBubble.prototype._createConfig = function() {
       set: StoryModel.prototype.setBacklogByModel
     }
   });
+  config.addColumnConfiguration(5, {
+	    title : "Iteration",
+	    headerTooltip : 'The iteration where the story has been assigned to',
+	    get : StoryModel.prototype.getIteration,
+	    decorator: DynamicsDecorators.iterationSelectDecorator,
+	    editable : true,
+	    edit: {
+	      editor: "AutocompleteSingle",
+	      dialogTitle: "Select iteration",
+	      dataType: "currentIterations",
+	      set: StoryModel.prototype.setIterationByModel
+	    }
+  });
   config.addColumnConfiguration(6, {
     title : "Responsibles",
     get : StoryModel.prototype.getResponsibles,
