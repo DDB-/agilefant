@@ -145,8 +145,11 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
 
         Story persisted = this.retrieve(storyId);
 
-        setResponsibles(persisted, responsibleIds);
+        if (storyHasChildren(persisted) && dataItem.getIteration() != null) {
+            throw new OperationNotPermittedException("Can't move a story with children to an iteration");
+        }
         
+        setResponsibles(persisted, responsibleIds);
         
         if (haveDifferentIteration(persisted, dataItem)) {
             fixAssignedIterationRanks(persisted, dataItem);
@@ -180,6 +183,20 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         }
         
         return persisted;
+    }
+
+    
+    static boolean storyHasChildren(Story story) {
+        if (story == null) {
+            return false;
+        }
+        
+        List<Story> children = story.getChildren();
+        if (children != null && children.size() > 0) {
+            return true;
+        }
+        
+        return false;
     }
 
     
