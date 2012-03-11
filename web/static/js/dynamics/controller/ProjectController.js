@@ -53,11 +53,12 @@ ProjectController.prototype.filter = function() {
         this.getStoryTreeStateFilters());
   }
   else if (activeTab === 2) { // iterations
-    this.iterationsView.showInfoMessage("Loading...");
-    this.model.reloadIterations(null, function() {
-      me.iterationsView.hideInfoMessage("Loading...");
-      //me.iterationsView.render();
-    });
+// Project-Level Auto-Refresh
+//    this.iterationsView.showInfoMessage("Loading...");
+//    this.model.reloadIterations(null, function() {
+//      me.iterationsView.hideInfoMessage("Loading...");
+//      //me.iterationsView.render();
+//    });
     this.iterationsView.filter();
   }
 };
@@ -324,13 +325,14 @@ ProjectController.prototype.paint = function() {
   });
   ModelFactory.getInstance()._getData(ModelFactory.initializeForTypes.project,
       this.id, function(model) {
-        ModelFactory.callEvery(30000,
-          function() {
-            model.reload(); // reload the base page and iteration tab
-            
-            me.filter(); // reload the tab content (story tree, leaf stories)
-          }
-        );
+// Project-Level Auto-Refresh
+//        ModelFactory.callEvery(30000,
+//          function() {
+//            model.reload(); // reload the base page and iteration tab
+//            
+//            me.filter(); // reload the tab content (story tree, leaf stories)
+//          }
+//        );
         me.model = model;
         me.attachModelListener();
         me.paintProjectDetails();
@@ -668,6 +670,15 @@ ProjectController.prototype.initializeStoryConfig = function() {
   });
   
   config.addColumnConfiguration(1, {
+    minWidth : 30,
+    autoScale : true,
+    title : "ID",
+    headerTooltip : 'Story ID',
+    get : CommonModel.prototype.getId,
+    editable : false
+  });
+  
+  config.addColumnConfiguration(2, {
     minWidth : 280,
     autoScale : true,
     title : "Name",
@@ -683,7 +694,7 @@ ProjectController.prototype.initializeStoryConfig = function() {
     }
   });
   
-  config.addColumnConfiguration(2, {
+  config.addColumnConfiguration(3, {
     minWidth : 50,
     autoScale : true,
     title : "Value",
@@ -699,7 +710,7 @@ ProjectController.prototype.initializeStoryConfig = function() {
     }
   });
 
-  config.addColumnConfiguration(3, {
+  config.addColumnConfiguration(4, {
     minWidth : 50,
     autoScale : true,
     title : "Points",
@@ -715,7 +726,7 @@ ProjectController.prototype.initializeStoryConfig = function() {
     }
   });
   
-  config.addColumnConfiguration(4, {
+  config.addColumnConfiguration(5, {
     minWidth : 70,
     autoScale : true,
     title : 'State',
@@ -731,7 +742,7 @@ ProjectController.prototype.initializeStoryConfig = function() {
     }
   });
   
-  config.addColumnConfiguration(5, {
+  config.addColumnConfiguration(6, {
     minWidth : 70,
     autoScale : true,
     title : "Responsibles",
@@ -748,7 +759,7 @@ ProjectController.prototype.initializeStoryConfig = function() {
     }
   });
 
-  config.addColumnConfiguration(6, {
+  config.addColumnConfiguration(7, {
     minWidth : 100,
     autoScale : true,
     columnName: "backlog",
@@ -765,21 +776,21 @@ ProjectController.prototype.initializeStoryConfig = function() {
       set: StoryModel.prototype.moveStory
     }
   });
-  config.addColumnConfiguration(7, {
+  config.addColumnConfiguration(8, {
     minWidth : 40,
     columnName: "edit",
     autoScale : true,
     title : "Edit",
     subViewFactory : StoryController.prototype.projectStoryActionFactory
   });
-  config.addColumnConfiguration(8, {
+  config.addColumnConfiguration(9, {
     minWidth : 40,
     columnName: "ranktotop",
     autoScale : true,
     title : "",
     subViewFactory : StoryController.prototype.rankToTopAction
   });
-  config.addColumnConfiguration(9, {
+  config.addColumnConfiguration(10, {
     minWidth : 60,
     columnName: "ranktobottom",
     autoScale : true,
@@ -788,10 +799,10 @@ ProjectController.prototype.initializeStoryConfig = function() {
   });
   
   if (Configuration.isLabelsInStoryList()) {
-	  config.addColumnConfiguration(10, StoryListController.columnConfig.labels);
+	  config.addColumnConfiguration(11, StoryListController.columnConfig.labels);
   }
   
-  config.addColumnConfiguration(11, {
+  config.addColumnConfiguration(12, {
     columnName: "description",
     fullWidth: true,
     visible: false,
@@ -802,14 +813,14 @@ ProjectController.prototype.initializeStoryConfig = function() {
       set : StoryModel.prototype.setDescription
     }
   });
-  config.addColumnConfiguration(12, {
+  config.addColumnConfiguration(13, {
     fullWidth : true,
     visible : false,
     columnName: "details",
     subViewFactory : StoryController.prototype.storyDetailsFactory,
     delayedRender: true
   });
-  config.addColumnConfiguration(13, {
+  config.addColumnConfiguration(14, {
     columnName: "buttons",
     fullWidth : true,
     visible : false,

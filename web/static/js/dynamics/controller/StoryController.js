@@ -358,7 +358,7 @@ StoryController.prototype._getStoryActionItems = function(isProject) {
     text : "Move",
     callback : StoryController.prototype.moveStory
   });
-  if (!(this.parentController instanceof DailyWorkStoryListController))
+  if (this.parentController instanceof StoryListController)
   {
 	  actionItems.push({
 	    text: "Copy",
