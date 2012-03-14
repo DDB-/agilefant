@@ -476,7 +476,8 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         /* Check for moving to other product */
         if (!story.getChildren().isEmpty()) {
 
-            if (!story.getIteration().isStandAlone()) {
+            Iteration iteration = story.getIteration();
+            if (iteration != null && !iteration.isStandAlone()) {
                 if (backlogBusiness.getParentProduct(story.getBacklog()) != backlogBusiness
                         .getParentProduct(backlog)) {
                     throw new OperationNotPermittedException(
@@ -625,7 +626,9 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         if ((backlog instanceof Product) && !(oldBacklog instanceof Product)) {
             if (oldBacklog instanceof Iteration) {
                 storyRankBusiness.removeRank(story, oldBacklog.getParent());
-                storyRankBusiness.removeRank(story, oldIteration);
+                if (oldIteration != null) {
+                    storyRankBusiness.removeRank(story, oldIteration);
+                }
             }
             storyRankBusiness.removeRank(story, oldBacklog);
 
@@ -677,7 +680,10 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                     storyRankBusiness.rankToBottom(story, backlog);
                 } else {
                 storyRankBusiness.removeRank(story, oldBacklog);
-                storyRankBusiness.removeRank(story, oldIteration);
+                
+                if (oldIteration != null) {
+                    storyRankBusiness.removeRank(story, oldIteration);
+                }
                 storyRankBusiness.rankToBottom(story, backlog);               
                 storyRankBusiness.rankToBottom(story, backlogsParent);
                     }
