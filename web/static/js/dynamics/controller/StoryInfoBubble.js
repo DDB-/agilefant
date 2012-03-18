@@ -121,12 +121,9 @@ StoryInfoBubble.prototype.confirmTasksAndChildrenToDone = function(model, storyT
 			if (nonDoneTasks)
 				model.currentData.tasksToDone = true;
 			model.commit();
-			storyTree.refresh();
 		}
-	} else {
-	  model.commit();
-	  storyTree.refresh();
 	}
+	if (!nonDoneChildren && (!isTopStory))		storyTree.refresh(); // this ensures refreshal when a child story is marked as done};
 };
 
 StoryInfoBubble.prototype.handleModelEvents = function(event) {

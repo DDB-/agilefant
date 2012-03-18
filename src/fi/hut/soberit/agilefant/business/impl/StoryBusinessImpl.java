@@ -172,10 +172,9 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         }
         
         // Set the backlog if backlogId given
-        if (backlogId != null) {
+        if (backlogId != null && (dataItem.getBacklog() == null || (dataItem.getBacklog() == persisted.getBacklog()))) {
             this.moveStoryToBacklog(persisted, backlogBusiness.retrieve(backlogId));
-        } else if (dataItem.getBacklog() != persisted.getBacklog() &&
-                 dataItem.getBacklog() != null) {
+        } else if (dataItem.getBacklog() != persisted.getBacklog() && dataItem.getBacklog() != null) {
             this.moveStoryToBacklog(persisted, dataItem.getBacklog());
         }
         
@@ -476,8 +475,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         /* Check for moving to other product */
         if (!story.getChildren().isEmpty()) {
 
-            Iteration iteration = story.getIteration();
-            if (iteration != null && !iteration.isStandAlone()) {
+            if (!story.getIteration().isStandAlone()) {
                 if (backlogBusiness.getParentProduct(story.getBacklog()) != backlogBusiness
                         .getParentProduct(backlog)) {
                     throw new OperationNotPermittedException(
@@ -605,8 +603,9 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         storyDAO.store(story);
         rankToBottom(story, backlog, oldBacklog, oldIteration);
 
-        if(oldBacklog != null)
+        if(oldBacklog != null) {
             backlogHistoryEntryBusiness.updateHistory(oldBacklog.getId());
+        }
         backlogHistoryEntryBusiness.updateHistory(backlog.getId());
         if (oldBacklog instanceof Iteration) {
             iterationHistoryEntryBusiness.updateIterationHistory(oldBacklog
@@ -626,9 +625,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         if ((backlog instanceof Product) && !(oldBacklog instanceof Product)) {
             if (oldBacklog instanceof Iteration) {
                 storyRankBusiness.removeRank(story, oldBacklog.getParent());
-                if (oldIteration != null) {
-                    storyRankBusiness.removeRank(story, oldIteration);
-                }
+                storyRankBusiness.removeRank(story, oldIteration);
             }
             storyRankBusiness.removeRank(story, oldBacklog);
 
@@ -674,10 +671,12 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
                 if (oldIteration != null && oldIteration.isStandAlone()) {
                     storyRankBusiness.removeRank(story, oldIteration);
                 }
-                storyRankBusiness.rankToBottom(story, backlog);
+                storyRankBusiness.rankToBottom(story, backlog); //rank in iteration
+                storyRankBusiness.rankToBottom(story, oldBacklog); // and also in Project
             } else {
-                if (backlogsParent == null) {
+                if (backlogsParent == null) { //move from project to standalone
                     storyRankBusiness.rankToBottom(story, backlog);
+                    storyRankBusiness.rankToBottom(story, oldBacklog);
                 } else {
                 storyRankBusiness.removeRank(story, oldBacklog);
                 
