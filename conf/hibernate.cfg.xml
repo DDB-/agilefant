@@ -12,7 +12,7 @@
  -->
 
 <hibernate-configuration>
-	<session-factory>
+	<session-factory name="hibernateSessionFactory">
 		<!--
 			we need the package mapping to make package-info.java work, but it
 			won't map all the package classes
@@ -47,7 +47,6 @@
     	<mapping class="fi.hut.soberit.agilefant.model.AgilefantWidget" />
     	<mapping class="fi.hut.soberit.agilefant.model.WidgetCollection" />
     	<mapping class="fi.hut.soberit.agilefant.model.StoryAccess" />
-   
 
 		<!--
 			<mapping class="fi.hut.soberit.agilefant.model.BusinessTheme" />

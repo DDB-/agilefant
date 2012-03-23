@@ -33,7 +33,7 @@ public class StoryHierarchyDAOHibernate extends GenericDAOHibernate<Story>
             Criteria iterationCrit, Project project) {
         projectCrit.add(Restrictions.eq("backlog", project));
         projectCrit.add(Restrictions.isEmpty("children"));
-        iterationCrit.createCriteria("backlog").add(Restrictions.eq("parent", project));
+	iterationCrit.createCriteria("backlog").add(Restrictions.eq("parent", project));
         iterationCrit.add(Restrictions.isEmpty("children"));
     }
     
@@ -153,8 +153,8 @@ public class StoryHierarchyDAOHibernate extends GenericDAOHibernate<Story>
         List<Story> ret = new ArrayList<Story>();
         ret.addAll(directProjectRoots);
         ret.addAll(iterationRoots);
-
-        Collections.sort(ret, new PropertyComparator("name", true, true));
+        
+        Collections.sort(ret, new PropertyComparator("treeRank", true, true));
         
         return ret;
     }
@@ -194,7 +194,7 @@ public class StoryHierarchyDAOHibernate extends GenericDAOHibernate<Story>
         Story story = (Story)uniqueResult(rootFilter);
         if (story == null) {
             return 0;
-        } else {
+        } else {    
             return story.getTreeRank();
         }
     }

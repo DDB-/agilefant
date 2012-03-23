@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
 <project basedir="." default="webapp" name="Agilefant">
 
 	<property file="build-user.properties" />
@@ -72,6 +73,7 @@
 		<property description="The location to store the per run files" name="jmeter.result.dir" value="${test.reports.jmeter}" />
 		<property description="The resulting file location, make sure this is unique for each build" name="jmeter.result.file" value="${jmeter.result.dir}/result_${struts.agilefantVersionNumber}_${build.id}.xml" />
 		<property description="The location to generate the html and charts to. " name="jchav.result.dir" value="${test.reports.jchav}" />
+		
 		<path id="jax-ws">
 			<fileset dir="${lib}/build/jax-ws">
 					<include name="*.jar" />
@@ -492,7 +494,7 @@
 				model/UserListContainer.js, model/TeamListContainer.js, model/HourEntryListContainer.js, model/PortfolioModel.js, model/LabelModel.js, model/DailyWorkModel.js, 
 				model/WorkQueueTaskModel.js, model/ModelFactory.js, model/AccessListContainer.js, controller/AccessRowController.js, controller/AccessListController.js, controller/CommonController.js, controller/BacklogController.js, controller/TaskController.js, 
 				controller/AssignmentController.js, controller/StoryController.js, controller/IterationController.js, controller/StoryListController.js, controller/ProductController.js, 
-				controller/IterationRowController.js, controller/ProjectController.js, controller/ProjectRowController.js, controller/DailyWorkController.js, 
+				controller/IterationRowController.js, controller/ProjectController.js, controller/ProjectRowController.js, controller/ROIterationController.js, controller/ROStoryListController.js, controller/DailyWorkController.js, 
 				controller/TasksWithoutStoryController.js, controller/DailyWorkStoryListController.js, controller/DailyWorkTasksWithoutStoryController.js, controller/WorkQueueController.js,
 				controller/TaskSplitDialog.js, controller/UserController.js, controller/StoryInfoBubble.js, controller/UserListController.js, controller/UserRowController.js, 
 				controller/TeamListController.js, controller/TeamRowController.js, controller/CreateDialog.js, controller/TaskInfoDialog.js, controller/HourEntryController.js, 

@@ -68,10 +68,9 @@ public class Iteration extends Backlog implements Schedulable, TaskContainer {
     
     private ExactEstimate baselineLoad = new ExactEstimate(0);
     
-    private Set<Story> assignedStories = new HashSet<Story>();
-
+    private String readonlyToken;
     
-
+    private Set<Story> assignedStories = new HashSet<Story>();
 
     @JSON
     @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
@@ -158,6 +157,17 @@ public class Iteration extends Backlog implements Schedulable, TaskContainer {
 
     public void setBaselineLoad(ExactEstimate baselineLoad) {
         this.baselineLoad = baselineLoad;
+    }
+    
+    public void setReadonlyToken(String readonlyToken) {
+        this.readonlyToken = readonlyToken;
+    }
+    
+    @Column(unique=true)
+    @JSON
+    @NotAudited
+    public String getReadonlyToken() {
+        return readonlyToken;
     }
     
     @OneToMany(mappedBy = "iteration")

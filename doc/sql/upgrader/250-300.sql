@@ -7,43 +7,9 @@ alter table stories_AUD add column iteration_id integer DEFAULT NULL;
 alter table stories modify column backlog_id integer DEFAULT NULL;
 
 INSERT INTO settings (`name`, `value`, `description`) VALUES ('AgilefantDatabaseVersion', '300', 'Agilefant database version') ON DUPLICATE KEY UPDATE `value`="300";
-
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS UpdateStoryIterationRefs //
-
-CREATE PROCEDURE UpdateStoryIterationRefs()
-BEGIN
-  DECLARE stories_loop_done BOOL DEFAULT FALSE;
-  DECLARE story_id INT;
-  DECLARE backlog_id INT;
-  DECLARE project_id INT;
-  DECLARE cur_story
-    CURSOR FOR
-    SELECT stories.id, stories.backlog_id FROM stories, backlogs WHERE backlogs.id = stories.backlog_id AND backlogs.backlogtype = 'Iteration';
-
-  DECLARE CONTINUE HANDLER FOR SQLSTATE '02000'
-    SET stories_loop_done = TRUE;
-
-  OPEN cur_story;
-
-  storyLoop: LOOP
-    FETCH cur_story INTO story_id, backlog_id;
-
-    SELECT parent_id INTO project_id FROM backlogs WHERE id = backlog_id;
-
-    IF stories_loop_done THEN
-      CLOSE cur_story;
-      LEAVE storyLoop;
-    END IF;
-
-    UPDATE stories SET iteration_id = backlog_id WHERE id = story_id;
-    UPDATE stories SET backlog_id = project_id WHERE id = story_id;
-  END LOOP;
-END //
-
-DELIMITER ;
-
-CALL UpdateStoryIterationRefs();
-
-DROP PROCEDURE IF EXISTS UpdateStoryIterationRefs;
+ALTER TABLE users ADD COLUMN admin bit DEFAULT 1 AFTER id;
+create table team_product (Team_id integer not null, Product_id integer not null) ENGINE=InnoDB;
+alter table team_product add index FK65CE090D745BA992 (Team_id), add constraint FK65CE090D745BA992 foreign key (Team_id) references teams (id);
+alter table team_product add index FK65CE090DA7FE2362 (Product_id), add constraint FK65CE090DA7FE2362 foreign key (Product_id) references backlogs (id);
+ALTER TABLE backlogs ADD COLUMN readonlyToken varchar(255) unique;
+INSERT INTO users (admin, loginName, enabled, recentItemsNumberOfWeeks) VALUES (0, "readonly", 1, 0);

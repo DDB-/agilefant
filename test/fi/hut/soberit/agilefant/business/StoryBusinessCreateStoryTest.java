@@ -109,7 +109,7 @@ public class StoryBusinessCreateStoryTest extends MockedTestCase {
         dataItem.setStoryPoints(22);
         dataItem.setState(StoryState.STARTED);
         
-        storyHierarchyBusiness.moveToBottom(returnedStory);
+        storyHierarchyBusiness.moveToTop(returnedStory);
         Backlog bl = null;
         expect(backlogBusiness.retrieve(5)).andReturn(bl);
         storyRankBusiness.rankToHead(returnedStory, bl); 
@@ -153,7 +153,7 @@ public class StoryBusinessCreateStoryTest extends MockedTestCase {
         returnedStory.setId(88);
         expect(storyDAO.get(88)).andReturn(returnedStory);
         
-        storyHierarchyBusiness.moveToBottom(returnedStory);
+        storyHierarchyBusiness.moveToTop(returnedStory);
         Backlog bl = null;
         expect(backlogBusiness.retrieve(5)).andReturn(bl);
         storyRankBusiness.rankToHead(returnedStory, bl); 

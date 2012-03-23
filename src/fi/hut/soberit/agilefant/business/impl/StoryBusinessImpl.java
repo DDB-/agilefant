@@ -379,14 +379,17 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
 
     public Story create(Story dataItem, Integer backlogId, Integer iterationId, Set<Integer> responsibleIds, List<String> labelNames) 
             throws IllegalArgumentException, ObjectNotFoundException {
-        
         Story persisted = null;
         if (iterationId != null && iterationId != 0) {
-            persisted = this.persistNewStory(dataItem, backlogId, iterationId, responsibleIds);        
+            persisted = this.persistNewStory(dataItem, backlogId, iterationId, responsibleIds);
+            storyRankBusiness.rankToHead(persisted, backlogBusiness.retrieve(iterationId));
         } else {
             persisted = this.persistNewStory(dataItem, backlogId, responsibleIds);        
         }
-        storyHierarchyBusiness.moveToBottom(persisted);
+
+        //old - prevents tree view from exploding until it's fixed 
+        //storyHierarchyBusiness.moveToBottom(persisted);
+        storyHierarchyBusiness.moveToTop(persisted);
         
         //new
         storyRankBusiness.rankToHead(persisted, backlogBusiness.retrieve(backlogId)); 
@@ -629,8 +632,16 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         // if target is product -> remove all ranks
         if ((backlog instanceof Product) && !(oldBacklog instanceof Product)) {
             if (oldBacklog instanceof Iteration) {
-                storyRankBusiness.removeRank(story, oldBacklog.getParent());
-                storyRankBusiness.removeRank(story, oldIteration);
+
+                if (oldIteration != null) {
+                    storyRankBusiness.removeRank(story, oldIteration);
+                }
+
+                Backlog parent = oldBacklog.getParent();
+                if (parent != null) {
+                    storyRankBusiness.removeRank(story, parent);
+                }
+
             }
             storyRankBusiness.removeRank(story, oldBacklog);
 

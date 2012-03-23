@@ -54,4 +54,8 @@ public interface IterationBusiness extends GenericBusiness<Iteration> {
     
     public List<AgilefantHistoryEntry> renderSortedTaskAndStoryRevisions(
             Iteration iteration);
+    
+    public Iteration retreiveIterationByReadonlyToken(String readonlyToken);
+    
+    public int getIterationCountFromReadonlyToken(String readonlyToken);
 }
