@@ -208,6 +208,9 @@ HourEntryModel.prototype.setEffortLeft = function(effortLeft) {
 };
 
 HourEntryModel.prototype.effortLeftEditable = function() {
+  if(this.relatons.story != null || this.relations.backlog != null){
+	return false;
+  }
   return true;
 };
 
