@@ -7,6 +7,7 @@ import java.util.Set;
 import org.joda.time.Days;
 
 import fi.hut.soberit.agilefant.model.Backlog;
+import fi.hut.soberit.agilefant.model.Iteration;
 import fi.hut.soberit.agilefant.model.Product;
 import fi.hut.soberit.agilefant.model.Schedulable;
 import fi.hut.soberit.agilefant.model.Story;
@@ -61,10 +62,10 @@ public interface BacklogBusiness extends GenericBusiness<Backlog> {
     
     public int getRootParentId(Backlog backlog);
     
-    public int getStoryPointSumByBacklog(Backlog backlog);
+    public int getStoryPointSumByIteration(Iteration backlog);
     
-    public int getStoryValueSumByBacklog(Backlog backlog);
-    public int getCompletedStoryValueSumByBacklog(Backlog backlog);
+    public int getStoryValueSumByIteration(Iteration backlog);
+    public int getCompletedStoryValueSumByIteration(Iteration backlog);
     
     public Days daysLeftInSchedulableBacklog(Schedulable backlog);
     public float calculateBacklogTimeframePercentageLeft(Schedulable backlog);
@@ -77,4 +78,5 @@ public interface BacklogBusiness extends GenericBusiness<Backlog> {
      */
     public List<Story> retrieveUnexpectedStories(Schedulable backlog);
     
+    public Collection<Backlog> retrieveAllStandAloneIterations();
 }

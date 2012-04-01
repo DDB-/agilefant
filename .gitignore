@@ -1,4 +1,4 @@
 build
 eclipse-classes
 build-user.properties
-*~
+*.js~

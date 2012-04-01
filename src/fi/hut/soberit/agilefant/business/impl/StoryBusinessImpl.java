@@ -560,7 +560,8 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             }
         } else {
             story.setBacklog(target);
-            story.setIteration(null);
+            if(oldIteration != null && !oldIteration.isStandAlone())
+              story.setIteration(null);
         }
 
         target.getStories().add(story);
@@ -605,7 +606,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
 
     private void rankToProduct(Story story, Backlog oldBacklog, Backlog oldIteration) {
         storyRankBusiness.removeRank(story, oldBacklog);
-        if (oldIteration != null) {
+        if (oldIteration != null && story.getIteration() == null) {
             storyRankBusiness.removeRank(story, oldIteration);
         }
     }
@@ -630,7 +631,7 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             storyRankBusiness.removeRank(story, oldBacklog);
         }
         Backlog oldIterationParent = null;
-        if (oldIteration != null) {
+        if (oldIteration != null && !oldIteration.isStandAlone()) {
             storyRankBusiness.removeRank(story, oldIteration);
             oldIterationParent = oldIteration.getParent();
         }
@@ -682,12 +683,13 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
             throw new IllegalArgumentException("Story should be given");
         }
         // backlog mismatch
-        if (otherStory != null && backlog == null
-                && !isValidRankTarget(story, otherStory)) {
+        boolean rankingProject = backlog != null;
+        
+        if (otherStory != null && !isValidRankTarget(story, otherStory, rankingProject)) {
             throw new IllegalArgumentException("Invalid backlogs");
         }
         if (backlog == null) {
-            backlog = story.getBacklog();
+            backlog = story.getIteration();
         }
         if (otherStory == null) {
             throw new IllegalArgumentException("Upper story should be given");
@@ -695,13 +697,16 @@ public class StoryBusinessImpl extends GenericBusinessImpl<Story> implements
         return backlog;
     }
 
-    private boolean isValidRankTarget(Story story, Story upperStory) {
-        boolean hasSameBacklog = upperStory.getBacklog() == story.getBacklog();
-        boolean underReference = upperStory.getBacklog() == story.getBacklog()
-                .getParent();
-        boolean referenceUnder = story.getBacklog() == upperStory.getBacklog()
-                .getParent();
-        return hasSameBacklog || underReference || referenceUnder;
+    private boolean isValidRankTarget(Story story, Story upperStory, boolean rankingProject) {
+        
+        if (rankingProject) {
+        
+            boolean hasSameBacklog = upperStory.getBacklog() == story.getBacklog();
+            return hasSameBacklog;
+        } else {
+            return upperStory.getIteration() == story.getIteration();
+            
+        }
     }
 
     @Transactional(readOnly = true)

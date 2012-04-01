@@ -1,9 +1,9 @@
 package fi.hut.soberit.agilefant.business.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,14 @@ public class SearchBusinessImpl implements SearchBusiness {
         List<Backlog> backlogs = backlogDAO.searchByName(searchTerm);
         backlogListSearchResult(result, backlogs);
         List<Story> stories = storyDAO.searchByName(searchTerm);
-        storyListSearchResult(result, stories);
+        try {
+            stories.addAll(storyDAO.searchByID(searchTerm));
+            storyListSearchResult(result, stories);
+        }
+        catch (Exception e) {
+            // The search term is not an integer
+            storyListSearchResult(result, stories);
+        }
         List<Task> tasks = taskDAO.searchByName(searchTerm);
         taskListSearchResult(result, tasks);
         return result;
@@ -107,17 +114,33 @@ public class SearchBusinessImpl implements SearchBusiness {
         } else if(bl instanceof Iteration){
             //look at project, then product
             Backlog temp = bl.getParent();
-            if(temp instanceof Product){
-                //iteration is directly under a product, not in a project
-                prod = (Product) temp;
+            if(temp == null){
+                //standalone iteration
+                temp = bl;
+                Set<Iteration> allowedIterations = new HashSet<Iteration>();
+                for(Team team : user.getTeams()){
+                    allowedIterations.addAll(team.getIterations());
+                }
+
+                //check if we have access 
+                if(allowedIterations.contains(temp)){
+                    return true;
+                }                
+                return false;
+                
             } else {
-                prod = (Product) temp.getParent();
+                if(temp instanceof Product){
+                    //iteration is directly under a product, not in a project
+                    prod = (Product) temp;
+                } else {
+                    prod = (Product) temp.getParent();
+                }
             }
         } else if(bl instanceof Product){
             prod = (Product)bl;
         }
         
-        Collection<Product> allowedProducts = new HashSet<Product>();
+        Set<Product> allowedProducts = new HashSet<Product>();
         for(Team team : user.getTeams()){
             allowedProducts.addAll(team.getProducts());
         }

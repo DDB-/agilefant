@@ -66,6 +66,12 @@ public class BacklogBusinessImpl extends GenericBusinessImpl<Backlog> implements
     }
 
     @Transactional(readOnly = true)
+    public Collection<Backlog> retrieveAllStandAloneIterations()
+    {   
+        return backlogDAO.retrieveStandaloneIterations();
+    }
+    
+    @Transactional(readOnly = true)
     public Collection<Backlog> getChildBacklogs(Backlog backlog) {
         Collection<Backlog> childBacklogs = new ArrayList<Backlog>();
         if (backlog == null) {
@@ -123,7 +129,7 @@ public class BacklogBusinessImpl extends GenericBusinessImpl<Backlog> implements
             return (Product)backlog;
         }
         Backlog parent = backlog;
-        if (backlog == null || backlog.getParent() == null) {
+        if (backlog == null || backlog.getParent() == null && !(backlog instanceof Product)) {
             return null;
         } else {
             while (!(parent instanceof Product)) {
@@ -158,18 +164,18 @@ public class BacklogBusinessImpl extends GenericBusinessImpl<Backlog> implements
     
     
     @Transactional(readOnly = true)
-    public int getStoryPointSumByBacklog(Backlog backlog) {
-        return storyDAO.getStoryPointSumByBacklog(backlog.getId());
+    public int getStoryPointSumByIteration(Iteration iteration) {
+        return storyDAO.getStoryPointSumByIteration(iteration.getId());
     }
     
     @Transactional(readOnly = true)
-    public int getStoryValueSumByBacklog(Backlog backlog) {
-        return storyDAO.getStoryValueSumByBacklog(backlog.getId());
+    public int getStoryValueSumByIteration(Iteration iteration) {
+        return storyDAO.getStoryValueSumByIteration(iteration.getId());
     }
     
     @Transactional(readOnly = true)
-    public int getCompletedStoryValueSumByBacklog(Backlog backlog) {
-        return storyDAO.getCompletedStoryValueSumByBacklog(backlog.getId());
+    public int getCompletedStoryValueSumByIteration(Iteration iteration) {
+        return storyDAO.getCompletedStoryValueSumByIteration(iteration.getId());
     }
     
     /**

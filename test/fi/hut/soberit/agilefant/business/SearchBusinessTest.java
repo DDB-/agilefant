@@ -1,9 +1,17 @@
 package fi.hut.soberit.agilefant.business;
 
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,9 +38,6 @@ import fi.hut.soberit.agilefant.test.MockContextLoader;
 import fi.hut.soberit.agilefant.test.MockedTestCase;
 import fi.hut.soberit.agilefant.test.TestedBean;
 import fi.hut.soberit.agilefant.transfer.SearchResultRow;
-
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = MockContextLoader.class)
@@ -61,7 +66,7 @@ public class SearchBusinessTest extends MockedTestCase {
         Backlog iteration = new Iteration();
         iteration.setParent(project);
         project.setParent(product);
-        Collection<Product> products = new ArrayList<Product>();
+        Set<Product> products = new HashSet<Product>();
         products.add((Product)product);
         team.setProducts(products);
         
@@ -70,6 +75,7 @@ public class SearchBusinessTest extends MockedTestCase {
         story.setBacklog(iteration);
         expect(backlogDAO.searchByName(search)).andReturn(Arrays.asList((Backlog)(iteration)));
         expect(storyDAO.searchByName(search)).andReturn(Arrays.asList(story));
+        expect(storyDAO.searchByID(search)).andReturn(Arrays.asList(story));
         expect(taskDAO.searchByName(search)).andReturn(Arrays.asList((Task)(new Task())));
         replayAll();
         List<SearchResultRow> result = searchBusiness.searchStoriesAndBacklog(search);
@@ -92,12 +98,13 @@ public class SearchBusinessTest extends MockedTestCase {
         story.setBacklog(iteration);
         iteration.setParent(project);
         project.setParent(product);
-        Collection<Product> products = new ArrayList<Product>();
+        Set<Product> products = new HashSet<Product>();
         products.add((Product)product);
         team.setProducts(products);
         
         expect(backlogDAO.searchByName(search)).andReturn(new ArrayList<Backlog>());
         expect(storyDAO.searchByName(search)).andReturn(new ArrayList<Story>());
+        expect(storyDAO.searchByID(search)).andReturn(new ArrayList<Story>());
         expect(storyDAO.get(123)).andReturn(story);
         expect(taskDAO.searchByName(search)).andReturn(Arrays.asList((Task)(new Task())));
         replayAll();
@@ -121,7 +128,7 @@ public class SearchBusinessTest extends MockedTestCase {
         iteration.setParent(project);
         project.setParent(product);
         story.setBacklog(iteration);
-        Collection<Product> products = new ArrayList<Product>();
+        Set<Product> products = new HashSet<Product>();
         products.add((Product)product);
         team.setProducts(products);
 
@@ -156,7 +163,7 @@ public class SearchBusinessTest extends MockedTestCase {
         Backlog iteration = new Iteration();
         iteration.setParent(project);
         project.setParent(product);
-        Collection<Product> products = new ArrayList<Product>();
+        Set<Product> products = new HashSet<Product>();
         products.add((Product)product);
         team.setProducts(products);
         
@@ -244,7 +251,7 @@ public class SearchBusinessTest extends MockedTestCase {
         Backlog iteration = new Iteration();
         iteration.setParent(project);
         project.setParent(product);
-        Collection<Product> products = new ArrayList<Product>();
+        Set<Product> products = new HashSet<Product>();
         products.add((Product)product);
         team.setProducts(products);
         List<Backlog> res = Arrays.asList((Backlog)(iteration));
@@ -266,7 +273,7 @@ public class SearchBusinessTest extends MockedTestCase {
         Backlog product = new Product();
         Backlog project = new Project();
         project.setParent(product);
-        Collection<Product> products = new ArrayList<Product>();
+        Set<Product> products = new HashSet<Product>();
         products.add((Product)product);
         team.setProducts(products);
         
@@ -295,7 +302,7 @@ public class SearchBusinessTest extends MockedTestCase {
         Backlog project = new Project();
         iteration.setParent(project);
         project.setParent(product);
-        Collection<Product> products = new ArrayList<Product>();
+        Set<Product> products = new HashSet<Product>();
         products.add((Product)product);
         team.setProducts(products);
         

@@ -152,7 +152,10 @@ var DynamicsDecorators = {
     return value.name;
   },
   storyContextDecorator: function(value) {
-    return '<a class="context" title="Backlog: ' + value.getName() + '" href="editBacklog.action?backlogId=' + value.getId() + '">' + value.getName() + '</a>';
+	if(value){
+		return '<a class="context" title="Backlog: ' + value.getName() + '" href="editBacklog.action?backlogId=' + value.getId() + '">' + value.getName() + '</a>';
+	}
+	return "";
   },
   taskContextDecorator: function(value) {
     var returned = "";
@@ -232,6 +235,20 @@ var DynamicsDecorators = {
   	return teamList.length + " teams";
   },
   productTeamListDecorator: function(teamList) {
+  	if(!teamList || !teamList.length) {
+  		return "(no teams)";
+  	}
+  	var teamNames = [];
+  	for(var i = 0; i < teamList.length; i++) {
+  		teamNames.push(teamList[i].getName());
+  	}
+  	teamNames.sort();
+  	return teamNames.join(', ');
+  },
+  iterationTeamCountDecorator: function(teamList) {
+  	return teamList.length + " teams";
+  },
+  iterationTeamListDecorator: function(teamList) {
   	if(!teamList || !teamList.length) {
   		return "(no teams)";
   	}
